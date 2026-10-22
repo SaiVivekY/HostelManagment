@@ -110,7 +110,7 @@ async function start(){
   await mongoose.connect(process.env.MONGODB_URI);
   for(const [mealType,startTime,endTime] of [['BREAKFAST','07:00','09:00'],['LUNCH','12:00','14:00'],['SNACK','16:00','17:00'],['DINNER','19:00','21:00']]) await MealSchedule.updateOne({mealType},{$setOnInsert:{mealType,startTime,endTime}},{upsert:true});
   if(process.env.ADMIN_EMAIL&&process.env.ADMIN_PASSWORD) await User.updateOne({email:process.env.ADMIN_EMAIL.toLowerCase()},{ $setOnInsert:{email:process.env.ADMIN_EMAIL.toLowerCase(),passwordHash:await bcrypt.hash(process.env.ADMIN_PASSWORD,12),role:'ADMIN',status:'ACTIVE'} },{upsert:true});
-  const port=process.env.PORT||3000; app.listen(port,()=>console.log(`Hostel Management Web is running at http://localhost:${port}`));
+  const port=process.env.PORT||3000; app.listen(port,'0.0.0.0',()=>console.log(`Hostel Management Web is running on port ${port}`));
 }
 if(require.main===module) start().catch(err=>{console.error(err.message);process.exit(1)});
 module.exports={app,models:{User,Student,Hostel,Block,Floor,RoomType,Room,Allocation,Payment,Leave,Complaint,Menu,MealSchedule,Feedback,Attendance,Notification}};
